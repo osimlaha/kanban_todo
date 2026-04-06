@@ -67,3 +67,19 @@ body{
     background-color: #d89216;
     opacity: 0.5;
 }
+
+.card{
+    background-color: #e1d89f;
+    padding: 10px;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    color: #000000;
+    cursor: grab; 
+    transition: all 0.3s ease;
+}
+
+.card:hover{
+    background-color: #e1d89f;
+    opacity: 0.8;
+    transform: scale(1.05);
+}
