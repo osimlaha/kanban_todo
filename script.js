@@ -1,5 +1,8 @@
 // let draggedCard=null;
 let rightClickedCard=null;
+
+document.addEventListener("DOMContentLoaded",loadTasksFromLocalStorage);
+
 function addTask(columnId) {
     const input = document.getElementById(`${columnId}-input`);
     const taskText = input.value;
@@ -18,6 +21,9 @@ function addTask(columnId) {
     
     //update task count
     updateTaskCount(columnId);
+
+    //save task to local storage
+    saveTaskToLocalStorage(columnId,taskText,taskDate);
 
     // Clear the input field after adding the task
     input.value = "";
@@ -57,8 +63,10 @@ function dragEnd(){
     this.classList.remove("dragging");
     // Clear the reference to the dragged card
     // draggedCard=null;
-
-    ["todo","doing","done"].forEach(updateTaskCount);
+    ["todo","doing","done"].forEach((columnId)=>{
+        updateTaskCount(columnId);
+        updateLocalStorage(columnId);
+    });
 }
 //drag over event for columns
 const columns=document.querySelectorAll(".column .task");
@@ -98,6 +106,10 @@ function editTask(){
         const newtasktext=prompt("Edit task ",rightClickedCard.textContent);
         if(newtasktext!==null){
             rightClickedCard.textContent=newtasktext;
+            ["todo","doing","done"].forEach((columnId)=>{
+                updateTaskCount(columnId);
+                updateLocalStorage(columnId);
+            });
         }
     }
 }
@@ -108,7 +120,10 @@ function deleteTask(){
     const columnId=rightClickedCard.parentElement.id.replace("-tasks","");
     if(rightClickedCard!==null){
         rightClickedCard.remove();
+
+        updateLocalStorage(columnId);
         updateTaskCount(columnId);
+        
     }
 }
 
@@ -120,4 +135,40 @@ function deleteTask(){
 function updateTaskCount(columnId){
     const count=document.querySelectorAll(`#${columnId}-tasks .card`).length;
     document.getElementById(`${columnId}-count`).textContent=count;
+}
+
+//save data in local storage
+function saveTaskToLocalStorage(columnId,taskText,taskDate){
+    const tasks=JSON.parse(localStorage.getItem(columnId)) || [];
+    tasks.push({text:taskText,date:taskDate});
+    localStorage.setItem(columnId,JSON.stringify(tasks));
+    //here columnId is key 
+    // and value is array of objects which contains text 
+    // and date of task
+}
+
+//load data from local storage
+function loadTasksFromLocalStorage(){
+    ["todo","doing","done"].forEach((columnId)=>{
+        // console.log(columnId);
+        // console.log(localStorage.getItem(columnId));
+        const tasks=JSON.parse(localStorage.getItem(columnId)) || [];
+        tasks.forEach(({text,date})=>{
+            const taskElement=createTaskElement(text,date);
+            document.getElementById(`${columnId}-tasks`).appendChild(taskElement);
+        });
+        updateTaskCount(columnId);
+    });
+}
+//load tasks when page loads
+function updateLocalStorage(columnId){
+    ["todo","doing","done"].forEach((columnId)=>{
+        const tasks=[];
+        document.querySelectorAll(`#${columnId}-tasks .card`).forEach((card)=>{
+            const taskText=card.querySelector("span").textContent;
+            const taskDate=card.querySelector("small").textContent;
+            tasks.push({text:taskText,date:taskDate});
+        });
+        localStorage.setItem(columnId,JSON.stringify(tasks));
+    });
 }
