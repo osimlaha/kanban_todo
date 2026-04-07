@@ -7,7 +7,12 @@ function addTask(columnId) {
 
     if (taskText==="") return;
     
-    const taskElement = createTaskElement(taskText);
+    //date and time
+    //toLocaleString() method returns a string with a 
+    // language-sensitive representation of the date and time.
+    const taskDate=new Date().toLocaleString();
+    console.log(taskDate);
+    const taskElement = createTaskElement(taskText,taskDate);
 
     document.getElementById(`${columnId}-tasks`).appendChild(taskElement);
     
@@ -15,12 +20,12 @@ function addTask(columnId) {
     input.value = "";
 }
 
-function createTaskElement(taskText) {
+function createTaskElement(taskText,taskDate) {
     const taskElement = document.createElement("div");
 
     // Set the class name for styling
+    taskElement.innerHTML=`<span>${taskText}</span><br><small class="time">${taskDate}</small>`;
     taskElement.classList.add("card");
-    taskElement.textContent = taskText;
 
     //for dragging
     //refrence of taskElement is changed 

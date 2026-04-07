@@ -98,3 +98,10 @@ body{
     cursor: pointer;
     color: #333;
 }
+.time{
+    text-align: end;
+    display: block;
+    font-style: italic;
+    color: #000000;
+    font-size: 12px;
+}
