@@ -16,6 +16,9 @@ function addTask(columnId) {
 
     document.getElementById(`${columnId}-tasks`).appendChild(taskElement);
     
+    //update task count
+    updateTaskCount(columnId);
+
     // Clear the input field after adding the task
     input.value = "";
 }
@@ -54,6 +57,8 @@ function dragEnd(){
     this.classList.remove("dragging");
     // Clear the reference to the dragged card
     // draggedCard=null;
+
+    ["todo","doing","done"].forEach(updateTaskCount);
 }
 //drag over event for columns
 const columns=document.querySelectorAll(".column .task");
@@ -100,7 +105,19 @@ function editTask(){
 //delete task function
 function deleteTask(){
     //console.log(rightClickedCard);
+    const columnId=rightClickedCard.parentElement.id.replace("-tasks","");
     if(rightClickedCard!==null){
         rightClickedCard.remove();
+        updateTaskCount(columnId);
     }
+}
+
+//update no of tasks in column
+//count update in three cases
+//1. when task is added
+//2. when task is deleted
+//3. when task is moved from one column to another
+function updateTaskCount(columnId){
+    const count=document.querySelectorAll(`#${columnId}-tasks .card`).length;
+    document.getElementById(`${columnId}-count`).textContent=count;
 }
