@@ -1,4 +1,5 @@
 // let draggedCard=null;
+let rightClickedCard=null;
 function addTask(columnId) {
     const input = document.getElementById(`${columnId}-input`);
     const taskText = input.value;
@@ -30,6 +31,10 @@ function createTaskElement(taskText) {
     taskElement.addEventListener("dragstart",dragStart);
     //drag end event PASTE
     taskElement.addEventListener("dragend",dragEnd);
+
+    //right click event for delete and edit
+    taskElement.addEventListener("contextmenu", ContextMenu);
+
     return taskElement;
 }
 
@@ -56,4 +61,41 @@ function dragOver(event){
     // we can directly used querySlector to get the reference of dragged card
     const draggedCard=document.querySelector(".dragging");
     this.appendChild(draggedCard);
+}
+
+//delte and edit task on right click
+function ContextMenu(event){
+    // Prevent the default context menu from appearing on right click
+    event.preventDefault();
+    rightClickedCard=this;
+    //pageX and pageY gives the x and y coordinates of the mouse pointer relative to the whole document
+    showContextMenu(event.pageX,event.pageY);
+}
+const menu=document.querySelector(".context-menu");
+function showContextMenu(x,y){
+    menu.style.display = "block";
+    menu.style.left =`${x}px`;
+    menu.style.top = `${y}px`;
+}
+document.addEventListener("click",()=>{
+    menu.style.display="none";
+});
+
+//edit task function
+function editTask(){
+    //console.log(rightClickedCard);
+    if(rightClickedCard!==null){
+        const newtasktext=prompt("Edit task ",rightClickedCard.textContent);
+        if(newtasktext!==null){
+            rightClickedCard.textContent=newtasktext;
+        }
+    }
+}
+
+//delete task function
+function deleteTask(){
+    //console.log(rightClickedCard);
+    if(rightClickedCard!==null){
+        rightClickedCard.remove();
+    }
 }

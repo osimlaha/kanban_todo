@@ -83,3 +83,18 @@ body{
     opacity: 0.8;
     transform: scale(1.05);
 }
+
+.context-menu{
+    display: none;
+    position: absolute;
+    background-color: #fff;
+    padding: 10px 0px;
+    border-radius: 4px;
+}
+
+.context-menu ul li{
+    list-style: none;
+    padding: 8px 20px;
+    cursor: pointer;
+    color: #333;
+}
