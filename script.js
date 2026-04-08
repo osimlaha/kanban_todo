@@ -78,7 +78,37 @@ function dragOver(event){
     //in palce of storing draggedcard varibale to store refrence of dragged card
     // we can directly used querySlector to get the reference of dragged card
     const draggedCard=document.querySelector(".dragging");
-    this.appendChild(draggedCard);
+    //this.appendChild(draggedCard);
+    
+    //drag sorting- to insert card at current mouse position
+    //check if there is any task under cursor
+    //if yes insert before that task otherwise insert at end
+
+    const afterElement=getDragAfterElement(this,event.clientY); 
+    //return the element after which we have to insert the dragged card
+    if(afterElement==null){
+        this.appendChild(draggedCard);
+    }else{
+        this.insertBefore(draggedCard,afterElement);
+    }
+}
+function getDragAfterElement(container,y){
+    const draggabeleElements=[
+        ...container.querySelectorAll(".card:not(.dragging)"),
+    ];
+    const Result=draggabeleElements.reduce(
+        (closetElementUnderCursor,currentTask)=>{
+            const box=currentTask.getBoundingClientRect();
+            const offset=y-box.top-box.height/2;
+            if(offset <0 && offset>closetElementUnderCursor.offset) {
+                return {offset:offset,elemet:currentTask};
+            }
+            else{
+                return closetElementUnderCursor;
+            }
+        },{offset:Number.NEGATIVE_INFINITY}
+    );
+    return Result.elemet;
 }
 
 //delte and edit task on right click
