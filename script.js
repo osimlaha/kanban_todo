@@ -93,13 +93,17 @@ function dragOver(event){
     }
 }
 function getDragAfterElement(container,y){
+    //get all draggable elements except the one being dragged
     const draggabeleElements=[
         ...container.querySelectorAll(".card:not(.dragging)"),
-    ];
+    ];// ... is spread operator which is used to convert node list to array
+    // reduce method is used to find the closest element under the cursor
     const Result=draggabeleElements.reduce(
         (closetElementUnderCursor,currentTask)=>{
+            //get the bounding box of current task
             const box=currentTask.getBoundingClientRect();
-            const offset=y-box.top-box.height/2;
+            //to get relative  position of cursor with respect to center of task
+            const offset=y-(box.top+box.height/2);
             if(offset <0 && offset>closetElementUnderCursor.offset) {
                 return {offset:offset,elemet:currentTask};
             }
@@ -107,6 +111,10 @@ function getDragAfterElement(container,y){
                 return closetElementUnderCursor;
             }
         },{offset:Number.NEGATIVE_INFINITY}
+        //offset:Number.NEGATIVE_INFINITY ->
+        // is used to initialize the offset to the smallest possible 
+        // value so that any element above the cursor will be considered 
+        // as a potential candidate for insertion point
     );
     return Result.elemet;
 }
