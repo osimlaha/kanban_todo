@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded",loadTasksFromLocalStorage);
 function addTask(columnId) {
     const input = document.getElementById(`${columnId}-input`);
     const taskText = input.value;
-    console.log(taskText);
+    //console.log(taskText);
 
     if (taskText==="") return;
     
@@ -14,7 +14,7 @@ function addTask(columnId) {
     //toLocaleString() method returns a string with a 
     // language-sensitive representation of the date and time.
     const taskDate=new Date().toLocaleString();
-    console.log(taskDate);
+    //console.log(taskDate);
     const taskElement = createTaskElement(taskText,taskDate);
 
     document.getElementById(`${columnId}-tasks`).appendChild(taskElement);
@@ -103,14 +103,16 @@ document.addEventListener("click",()=>{
 function editTask(){
     //console.log(rightClickedCard);
     if(rightClickedCard!==null){
-        const newtasktext=prompt("Edit task ",rightClickedCard.textContent);
+        const newtasktext=prompt("Edit task ",rightClickedCard.querySelector("span").textContent);
+        console.log(rightClickedCard.querySelector("span").textContent);
+        //console.log(rightClickedCard.textContent.text);
         if(newtasktext!==null){
-            rightClickedCard.textContent=newtasktext;
-            ["todo","doing","done"].forEach((columnId)=>{
-                updateTaskCount(columnId);
-                updateLocalStorage(columnId);
-            });
+            rightClickedCard.querySelector("span").textContent=newtasktext;
+            rightClickedCard.querySelector("small").textContent=new Date().toLocaleString();
+            const columnId=rightClickedCard.parentElement.id.replace("-tasks","");
+            updateLocalStorage(columnId);
         }
+
     }
 }
 
@@ -162,7 +164,7 @@ function loadTasksFromLocalStorage(){
 }
 //load tasks when page loads
 function updateLocalStorage(columnId){
-    ["todo","doing","done"].forEach((columnId)=>{
+    // ["todo","doing","done"].forEach((columnId)=>{
         const tasks=[];
         document.querySelectorAll(`#${columnId}-tasks .card`).forEach((card)=>{
             const taskText=card.querySelector("span").textContent;
@@ -170,5 +172,5 @@ function updateLocalStorage(columnId){
             tasks.push({text:taskText,date:taskDate});
         });
         localStorage.setItem(columnId,JSON.stringify(tasks));
-    });
+    
 }
